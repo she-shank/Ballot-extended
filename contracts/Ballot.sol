@@ -14,9 +14,16 @@ contract Ballot {
         uint voteCount; 
     }
 
+    modifier onlyChairperson {
+        require(msg.sender == chairperson, "Only chairperson can give right to vote.");
+        _;
+    }
+
     address public chairperson;
     mapping(address => Voter) public votersRecord;
     Proposal[] public proposals;
+    string test = "amogus";
+    
 
     constructor(bytes32[] memory proposalNames) {
         chairperson = msg.sender;
@@ -27,6 +34,10 @@ contract Ballot {
                 voteCount: 0
             }));
         }
+    }
+
+    function testingTheTest() public view onlyChairperson returns(string memory){
+        return test;
     }
 
     function Registration(address voter) public {

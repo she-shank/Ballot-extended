@@ -20,4 +20,5 @@ module.exports = function(deployer) {
     //also cannot to seem eliminate redundant function 'string_array_to_bytes32_array'
     var proposalNames = proposalNamesRaw.map(string_array_to_bytes32_array);
     deployer.deploy(Ballot,proposalNames);
+    
 };

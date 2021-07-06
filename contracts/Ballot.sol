@@ -2,6 +2,7 @@ pragma solidity >=0.7.0 <0.9.0;
 
 contract Ballot {
 
+    // Structures Definitions
     struct Voter {
         uint weight;
         bool isVoted;
@@ -14,17 +15,21 @@ contract Ballot {
         uint voteCount; 
     }
 
+  
+    // Modifiers
     modifier onlyChairperson {
         require(msg.sender == chairperson, "Only chairperson can give right to vote.");
         _;
     }
 
+
+    // State Variables
     address public chairperson;
     mapping(address => Voter) public votersRecord;
     Proposal[] public proposals;
-    string test = "amogus";
     
 
+    // Constructor and Functions
     constructor(bytes32[] memory proposalNames) {
         chairperson = msg.sender;
         votersRecord[chairperson].weight = 1;
@@ -36,17 +41,11 @@ contract Ballot {
         }
     }
 
-    function testingTheTest() public view onlyChairperson returns(string memory){
-        return test;
-    }
-
-    function Registration(address voter) public {
-        require(msg.sender == chairperson);
+    function registration(address voter) public  onlyChairperson {
         require(!votersRecord[voter].isVoted);
         require(votersRecord[voter].weight == 0);
         votersRecord[voter].weight = 1;
     }
-
 
     function delegate(address to) public {
         Voter storage sender = votersRecord[msg.sender];
@@ -78,7 +77,8 @@ contract Ballot {
         proposals[proposal].voteCount += sender.weight;
     }
 
-    function winningProposal() private view returns (uint winningProposal_){
+    function winningProposal() public view returns (bytes32 winningName_){
+        uint winningProposal_;
         uint winningVoteCount = 0;
         for (uint p = 0; p < proposals.length; p++) {
             if (proposals[p].voteCount > winningVoteCount) {
@@ -86,9 +86,6 @@ contract Ballot {
                 winningProposal_ = p;
             }
         }
-    }
-
-    function winnerName() public view returns (bytes32 winnerName_){
-        winnerName_ = proposals[winningProposal()].name;
+        winningName_ = proposals[winningProposal_].name;
     }
 }
